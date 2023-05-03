@@ -1,0 +1,23 @@
+{
+  "layers": 3,
+  "activation_functions": ["relu", "linear"],
+  "neurons": [2, 2, 1],
+  "weights": [
+    [
+      [0, 1, 1],
+      [-1, 1, 1]
+    ],
+    [[0, 1, -2]]
+  ],
+  "rows": 4,
+  "data_names": ["x1", "x2"],
+  "data": [
+    [0, 0],
+    [0, 1],
+    [1, 0],
+    [1, 1]
+  ],
+  "target_names": ["false", "true"],
+  "target": [[0], [1], [1], [0]],
+  "max_sse": 0.000001
+}

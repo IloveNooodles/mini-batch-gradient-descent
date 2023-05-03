@@ -1,0 +1,18 @@
+{
+  "layers": 2,
+  "activation_functions": ["sigmoid"],
+  "neurons": [2, 3],
+  "weights": [
+    [
+      [0.4, 0.2, 0.1],
+      [0.2, 0.4, 0.2],
+      [0.1, 0.2, 0.4]
+    ]
+  ],
+  "rows": 1,
+  "data_names": ["x1", "x2"],
+  "data": [[0.2, 0.4]],
+  "target_names": ["false", "true"],
+  "target": [[0.617747, 0.58904, 0.574442]],
+  "max_sse": 0.000001
+}

@@ -1,0 +1,18 @@
+{
+  "layers": 2,
+  "activation_functions": ["linear"],
+  "neurons": [2, 3],
+  "weights": [
+    [
+      [0.2, 0.5, 0.3],
+      [0.3, 0.2, -0.6],
+      [0.1, -0.8, 0.4]
+    ]
+  ],
+  "rows": 1,
+  "data_names": ["x1", "x2"],
+  "data": [[3.0, 1.0]],
+  "target_names": ["false", "true"],
+  "target": [[2.0, 0.3, -1.9]],
+  "max_sse": 0.000001
+}

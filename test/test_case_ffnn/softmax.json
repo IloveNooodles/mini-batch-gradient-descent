@@ -1,0 +1,18 @@
+{
+  "layers": 2,
+  "activation_functions": ["softmax"],
+  "neurons": [2, 3],
+  "weights": [
+    [
+      [1.0, 2.0, 3.0],
+      [2.0, 1.0, 2.0],
+      [3.0, 3.0, 1.0]
+    ]
+  ],
+  "rows": 1,
+  "data_names": ["x1", "x2"],
+  "data": [[1.0, 2.0]],
+  "target_names": ["false", "true"],
+  "target": [[0.665241, 0.090031, 0.244728]],
+  "max_sse": 0.000001
+}
