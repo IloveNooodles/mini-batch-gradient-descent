@@ -67,7 +67,7 @@ class Activation:
             raise Exception(
                 "Mode is not implemented, please select correct mode")
 
-    def backpropagation(self, res, target):
+    def backpropagation(self, res, target=[]):
         if self.mode == Activation.LINEAR:
             return self.__linear_derivative(res)
         elif self.mode == Activation.RELU:
@@ -95,21 +95,14 @@ class Activation:
 
 
 if __name__ == "__main__":
-    # x = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
-    # w1 = np.array([[1, 1], [1, 1]])
-    # b1 = np.array([0, -1])
-    # res = np.matmul(x, w1)
-    # res = np.add(res, b1)
-    # print(res)
-    # res[res < 0] = 0
-    # print(res)
-    a = Activation(Activation.LINEAR)
-    a.__linear_calculate()
+    # Softmax test
+    output = np.array([9.85e-1, 1.419e-2, 2.04e-4, 2.94e-6,
+                      4.24e-8, 6.11e-10, 8.81e-12, 6.11e-10, 4.24e-8, 1.82e-15])
 
-    # w = np.array([1, -2])
-    # res = np.matmul(res, w)
-    # Max 0
+    target = np.zeros(output.shape)
+    target[-1] = 1
 
-    # numerator = np.array([pow(math.e, x) for x in [3, 4, 1]])
-    # denominator = np.sum([pow(math.e, x) for x in [3, 4, 1]])
-    # print(numerator / denominator)
+    a = Activation(Activation.SOFTMAX)
+    res = a.backpropagation(output, target)
+
+    # print(res)

@@ -13,6 +13,7 @@ class FFNN:
         self.data = np.array(model['data'])
         self.target = np.array(model['target'])
         self.output = None
+        self.ouput_per_layer = []
         self.max_sse = model["max_sse"]
         pass
 
@@ -35,9 +36,13 @@ class FFNN:
             transposed_weights = np.transpose(np.array(self.weights[i]))
             weights, bias = self.separate_bias(transposed_weights)
             res = activation_function.calculate(res, weights, bias)
+            self.ouput_per_layer.append(res)
 
         self.output = res
         return res
+
+    def get_all_output_layer(self):
+        return self.ouput_per_layer
 
     def separate_bias(self, data):
         bias = data[0, :]
