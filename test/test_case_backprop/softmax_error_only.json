@@ -1,0 +1,36 @@
+{
+  "case": {
+    "model": {
+      "input_size": 1,
+      "layers": [
+        {
+          "number_of_neurons": 2,
+          "activation_function": "softmax"
+        }
+      ]
+    },
+    "input": [[-1.0]],
+    "initial_weights": [
+      [
+        [0.4, 0.7],
+        [0.2, -0.9]
+      ]
+    ],
+    "target": [[0.0, 1.0]],
+    "learning_parameters": {
+      "learning_rate": 0.1,
+      "batch_size": 1,
+      "max_iteration": 1,
+      "error_threshold": 0.225
+    }
+  },
+  "expect": {
+    "stopped_by": "error_threshold",
+    "final_weights": [
+      [
+        [0.4, 0.7],
+        [0.2, -0.9]
+      ]
+    ]
+  }
+}
