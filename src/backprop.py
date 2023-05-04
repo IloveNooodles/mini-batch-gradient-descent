@@ -45,19 +45,20 @@ class Backpropagation:
         total_batch = self.split_input_targets_to_batch(
             self.input, self.target, self.batch_size)
 
-        epoch = 1
+        epoch = 0
 
         self.forward_propagation()
 
         current_epoch_error = self.__loss(
             self.target, self.single_output, self.layers[-1]["activation_function"])
-        print("Backpropagation start")
-        # print(f"EPOCH: {epoch} ERROR: {current_epoch_error}")
-        # print(f"Output: {self.single_output}")
+        print("="*6 + " Backpropagation start " + "="*6)
         # Selama belum gg, backpropagate , update bobot trs feed lagi kedepan
-        while epoch == 1 or (epoch <= self.max_iteration and current_epoch_error >= self.error_threshold):
+        while (epoch < self.max_iteration and current_epoch_error >= self.error_threshold):
             total_layer = len(self.layers)
             prev_error = None
+            print("=" * 8 + f" EPOCH {epoch + 1} " + "=" * 8)
+            print(f"ERROR: {current_epoch_error}")
+            print(f"Output: {self.single_output}")
             for index_layer in range(total_layer - 1, -1, -1):
                 current_activation = self.layers[index_layer]["activation_function"]
                 output_layer = self.output[index_layer]
@@ -67,109 +68,106 @@ class Backpropagation:
                     targets = np.array(batch_instance["targets"])
                     gradient = None
 
-                    print(
-                        f"Layer {index_layer + 1} Batch {index + 1} completed")
+                    delta_weights = np.zeros(self.weights[index_layer].shape)
+                    for instance_index, instance in enumerate(inputs):
 
-                    # Kalau dia punya output (layer paling ujung)
-                    if index_layer == total_layer - 1:
-                        # Calculate dho error / dho weight
-                        # First part: -(t - o) -> (o - t)
-                        first_part = np.subtract(output_layer, targets)
+                        # Kalau dia punya output (layer paling ujung)
+                        if index_layer == total_layer - 1:
+                            # Calculate dho error / dho weight
+                            # First part: -(t - o) -> (o - t)
+                            first_part = np.subtract(
+                                output_layer[instance_index], targets[instance_index])
 
-                        # Second part: derivative
-                        second_part = a.derivative(output_layer, targets)
+                            # Second part: derivative
+                            second_part = a.derivative(
+                                output_layer[instance_index], targets[instance_index])
 
-                        # Third part: input di layer sebelumnya
-                        third_part = None
+                            # Third part: input di layer sebelumnya
+                            third_part = None
 
-                        # Kalau cuma 1 layer, pake input layer
-                        # add bias
-                        if len(self.output) == 1:
-                            third_part = np.insert(
-                                inputs, 0, np.ones(inputs[index].shape[0]))
+                            # Kalau cuma 1 layer, pake input layer
+                            # add bias
+                            if len(self.output) == 1:
+                                third_part = np.ones(
+                                    instance.shape[0] + 1)
+                                third_part[1:] = instance
+                            else:
+                                third_part = np.insert(
+                                    self.output[index_layer - 1], 0, np.ones(self.output[index_layer-1].shape[0]))
+
+                            # Third part must same as len each inital weights transposed
+                            cur_weights = np.transpose(
+                                self.weights[index_layer])
+                            third_parts = np.zeros(cur_weights.shape)
+                            for i in range(len(cur_weights)):
+                                third_parts[i] = third_part
+
+                            third_parts = np.transpose(third_parts)
+
+                            prev_error = np.multiply(first_part, second_part)
+                            gradient = np.multiply(prev_error, third_parts)
+                        # Kalau hidden layer
                         else:
-                            third_part = np.insert(
-                                self.output[index_layer - 1], 0, np.ones(self.output[index_layer-1].shape[0]))
+                            # Calculate dho error / dho weight
+                            # First part: dho error / dho net
 
-                        # Third part must same as len each inital weights transposed
-                        cur_weights = np.transpose(self.weights[index_layer])
-                        third_parts = np.zeros(cur_weights.shape)
-                        for i in range(len(cur_weights)):
-                            third_parts[i] = third_part
+                            # dho Ed / dho net_o; prev error
+                            # print(prev_error)
 
-                        third_parts = np.transpose(third_parts)
+                            # dho net_o / dho h
+                            next_layer_cur_weights = self.weights[index_layer + 1][1:]
 
-                        prev_error = np.multiply(first_part, second_part)
-                        gradient = np.multiply(prev_error, third_parts)
-                        """ 
-                        b b
-                        w5 w7
-                        w6 w8
-                        [[ 0.13849856 -0.03809824]
-                        [ 0.08216704 -0.02260254]
-                        [ 0.08266763 -0.02274024]]
-                        """
-                        # print(first_part, second_part, third_part)
-                        # print(third_part)
-                        # gradient = np.dot(
-                        #     np.dot(first_part, second_part), third_part)
-                        # print(gradient)
-                    # Kalau hidden layer
-                    else:
-                        # Calculate dho error / dho weight
-                        # First part: dho error / dho net
+                            # dho Ed / dho h
+                            temp = np.multiply(
+                                prev_error, next_layer_cur_weights)
 
-                        # dho Ed / dho net_o; prev error
-                        # print(prev_error)
+                            # calculate sum of the error outputs layer
+                            output_layer_sum_error = np.array(
+                                [np.sum(x) for x in temp])
 
-                        # dho net_o / dho h
-                        next_layer_cur_weights = self.weights[index_layer + 1][1:]
+                            derivative = a.derivative(output_layer, targets)
 
-                        # dho Ed / dho h
-                        temp = np.multiply(prev_error, next_layer_cur_weights)
+                            # calculate prev error
+                            prev_error = np.multiply(
+                                output_layer_sum_error, derivative)
 
-                        # calculate sum of the error outputs layer
-                        output_layer_sum_error = np.array(
-                            [np.sum(x) for x in temp])
+                            # Second part: dho net / dho weight
+                            second_part = None
 
-                        derivative = a.derivative(output_layer, targets)
+                            # Kalau udah paling ujung
+                            if index_layer == 0:
+                                second_part = np.ones(
+                                    (inputs.shape[0], inputs.shape[1] + 1))
+                                second_part[:, 1:] = inputs
+                            else:
+                                second_part = np.insert(
+                                    self.output[index_layer], 0, np.ones(self.output[index_layer].shape[0]))
 
-                        # calculate prev error
-                        prev_error = np.multiply(
-                            output_layer_sum_error, derivative)
+                            cur_weights = np.transpose(self.weights[i])
+                            second_parts = np.zeros(cur_weights.shape)
+                            for i in range(len(cur_weights)):
+                                second_parts[i] = second_part
 
-                        # Second part: dho net / dho weight
-                        second_part = None
+                            second_parts = np.transpose(second_parts)
 
-                        # Kalau udah paling ujung
-                        if index_layer == 0:
-                            second_part = np.insert(
-                                inputs, 0, np.ones(inputs.shape[0]))
-                            pass
-                        else:
-                            second_part = np.insert(
-                                self.output[index_layer], 0, np.ones(self.output[index_layer].shape[0]))
+                            gradient = np.multiply(prev_error, second_parts)
+                            # print(gradient)
 
-                        cur_weights = np.transpose(self.weights[i])
-                        second_parts = np.zeros(cur_weights.shape)
-                        for i in range(len(cur_weights)):
-                            second_parts[i] = second_part
-
-                        second_parts = np.transpose(second_parts)
-
-                        gradient = np.multiply(prev_error, second_parts)
-                        # print(gradient)
+                        # Update delta weights
+                        delta_weights = delta_weights - \
+                            np.dot(self.learning_rate, gradient)
 
                     # Update weight
-                    self.weights[index_layer] = self.weights[index_layer] - \
-                        np.dot(self.learning_rate, gradient)
+                    self.weights[index_layer] = self.weights[index_layer] + \
+                        delta_weights
+                    print(
+                        f"Layer {index_layer + 1} Batch {index + 1} completed")
             new_weights = [np.transpose(x) for x in self.weights]
             self.ffnn_model["weights"] = new_weights
             self.forward_propagation()
             current_epoch_error = self.__loss(
                 self.target,  self.single_output, self.layers[-1]["activation_function"])
 
-            print(f"EPOCH: {epoch} ERROR: {current_epoch_error}")
             epoch += 1
 
         print("Backpropagation complete")
