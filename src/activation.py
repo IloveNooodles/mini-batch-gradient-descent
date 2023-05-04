@@ -36,15 +36,18 @@ class Activation:
 
     def __softmax_calculate(self, res):
         numerator = np.array([pow(math.e, x) for x in res])
-        denominator = np.sum([pow(math.e, x) for x in res])
-        return numerator / denominator
+        denominator = np.array([np.sum(pow(math.e, x)) for x in res])
+        result = np.empty(numerator.shape)
+
+        for index, ele in enumerate(numerator):
+            result[index] = ele / denominator[index]
+
+        return result
 
     def __softmax_derivative(self, res, target=[]):
-
         return (np.exp(res) / np.sum(np.exp(res) * (1 - (np.exp(res) / np.sum(np.exp(res))))))
 
     def calculate(self, x, w, b):
-        print(x, w, b)
         res = np.matmul(x, w)
         res = np.add(res, b)
         if self.mode == Activation.LINEAR:

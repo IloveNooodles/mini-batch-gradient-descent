@@ -9,7 +9,7 @@ def main():
     print("=============================================")
     print("                Backpropagation              ")
     print("=============================================")
-    filename = input("Input filename inside test folder: ")
+    # filename = input("Input filename inside test folder: ")
 
     # path = "./test/"
     # transformed_model = Reader.read_ffnn("softmax.json")
@@ -21,6 +21,7 @@ def main():
     # transformed_model = b.transform_to_ffnn_model()
 
     ffnn = FFNN(model=transformed_model)
+    # print(ffnn)
     ffnn.compute()
     ffnn.predict()
 
