@@ -34,7 +34,6 @@ class Activation:
         res[res >= 0] = 1
         return res
 
-    # DERIVATIVES FUNCTION NEED TO BE FIXED
     def __softmax_calculate(self, res):
         numerator = np.array([pow(math.e, x) for x in res])
         denominator = np.sum([pow(math.e, x) for x in res])

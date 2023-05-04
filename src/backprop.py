@@ -12,7 +12,10 @@ class Backpropagation:
         self.input = model["input"]
         self.weights = model["initial_weights"]
         self.target = model["target"]
-        self.learning_params = model["learning_parameters"]
+        self.learning_rate = model["learning_parameters"]["learning_rate"]
+        self.batch_size = model["learning_parameters"]["batch_size"]
+        self.max_iteration = model["learning_parameters"]["max_iteration"]
+        self.error_threshold = model["learning_parameters"]["error_threshold"]
         self.expected = expected
 
     def __loss(target: list, y: list, activation) -> float:

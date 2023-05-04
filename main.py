@@ -12,9 +12,9 @@ def main():
     filename = input("Input filename inside test folder: ")
 
     # path = "./test/"
-    # model = Reader.read_ffnn(path + filename)
+    # transformed_model = Reader.read_ffnn("softmax.json")
     raw_model, transformed_model, expected = Reader.read_backprop(
-        "softmax_error_only.json")
+        "softmax.json")
     # print(raw_model, transformed_model, expected)
 
     # b = Backpropagation(model, expected)
