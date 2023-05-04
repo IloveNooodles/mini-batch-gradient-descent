@@ -14,7 +14,7 @@ def main():
     # path = "./test/"
     # transformed_model = Reader.read_ffnn("softmax.json")
     raw_model, ffnn_model, expected = Reader.read_backprop(
-        "sse_only.json")
+        "test.json")
     # print(raw_model, ffnn_model, expected)
 
     b = Backpropagation(raw_model, expected, ffnn_model)

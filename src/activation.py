@@ -45,10 +45,12 @@ class Activation:
         return result
 
     def __softmax_derivative(self, res, target=[]):
+        print(target)
         for index, val in enumerate(target):
-            if val == 1:
-                pred = res[index]
-                res[index] = -(1 - pred)
+            for t in val:
+              if t == 1:
+                  pred = res[index]
+                  res[index] = -(1 - pred)
 
         return res
 
@@ -67,7 +69,7 @@ class Activation:
             raise Exception(
                 "Mode is not implemented, please select correct mode")
 
-    def backpropagation(self, res, target=[]):
+    def derivative(self, res, target=[]):
         if self.mode == Activation.LINEAR:
             return self.__linear_derivative(res)
         elif self.mode == Activation.RELU:
