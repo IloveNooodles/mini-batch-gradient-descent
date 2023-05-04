@@ -1,0 +1,58 @@
+{
+  "case": {
+    "model": {
+      "input_size": 2,
+      "layers": [
+        {
+          "number_of_neurons": 2,
+          "activation_function": "linear"
+        },
+        {
+          "number_of_neurons": 2,
+          "activation_function": "relu"
+        }
+      ]
+    },
+    "input": [
+      [-1.0, 0.5],
+      [0.5, -1.0]
+    ],
+    "initial_weights": [
+      [
+        [0.1, 0.2],
+        [0.4, -0.5],
+        [0.7, 0.8]
+      ],
+      [
+        [0.1, 0.2],
+        [0.4, -0.5],
+        [0.7, 0.8]
+      ]
+    ],
+    "target": [
+      [0.1, 1.0],
+      [1.0, 0.1]
+    ],
+    "learning_parameters": {
+      "learning_rate": 0.1,
+      "batch_size": 2,
+      "max_iteration": 1,
+      "error_threshold": 0.0
+    }
+  },
+  "expect": {
+    "stopped_by": "max_iteration",
+    "final_weights": [
+      [
+        [0.07115, 0.1403],
+        [0.42885, -0.4403],
+        [0.685575, 0.77015]
+      ],
+      [
+        [0.121, 0.2045],
+        [0.35605, -0.504275],
+        [0.5281, 0.78545]
+      ]
+    ]
+  }
+}
