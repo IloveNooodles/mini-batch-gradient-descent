@@ -36,7 +36,7 @@ class FFNN:
     def compute(self):
         res = self.data
         for i in range(self.layers - 1):
-            activation_function = Activation(self.activation_functions[i])
+            activation_function = Activation(self.activation_functions[i], False)
             transposed_weights = np.transpose(np.array(self.weights[i]))
             weights, bias = self.separate_bias(transposed_weights)
             res = activation_function.calculate(res, weights, bias)

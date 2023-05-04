@@ -9,21 +9,34 @@ class Activation:
     SIGMOID = "sigmoid"
     SOFTMAX = "softmax"
 
-    def __init__(self, mode) -> None:
+    def __init__(self, mode, backprop) -> None:
         self.mode = mode
+        self.backprop = backprop
 
     def __linear_calculate(self, res):
+        if (self.backprop):
+            return np.ones(np.shape(res))
         return res
 
     def __sigmoid_calculate(self, res):
+        if (self.backprop):
+            return res * (1 - res)
         res = np.array([(1 / (1 + pow(math.e, -x))) for x in res])
         return res
 
     def __relu_calculate(self, res):
+        if (self.backprop):
+            res[res < 0] = 0
+            res[res >= 0] = 1
+            return res
         res[res < 0] = 0
         return res
 
+    # DERIVATIVES FUNCTION NEED TO BE FIXED
     def __softmax_calculate(self, res):
+        if (self.backprop):
+            pass
+            # return (np.exp(res) / np.sum(np.exp(res) * (1 - (np.exp(res) / np.sum(np.exp(res))))))
         numerator = np.array([pow(math.e, x) for x in res])
         denominator = np.sum([pow(math.e, x) for x in res])
         return numerator / denominator
