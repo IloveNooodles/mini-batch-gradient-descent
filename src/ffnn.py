@@ -10,11 +10,8 @@ class FFNN:
         self.activation_functions = np.array(model['activation_functions'])
         self.neurons = np.array(model['neurons'])
         self.weights = model['weights']
-        self.rows = model['rows']
-        self.data_names = np.array(model['data_names'])
         self.data = np.array(model['data'])
         self.target = np.array(model['target'])
-        self.target_names = np.array(model['target_names'])
         self.output = None
         self.max_sse = model["max_sse"]
         pass
@@ -25,18 +22,16 @@ class FFNN:
   Activations: {self.activation_functions}\n\
   Neurons: {self.neurons}\n\
   Weights: {self.weights}\n\
-  Rows: {self.rows}\n\
   Data: {self.data}\n\
-  Data_names: {self.data_names}\n\
   target: {self.target}\n\
-  target_names: {self.target_names}\n\
   max_sse: {self.max_sse}\n"
 
     # Will return output functions
     def compute(self):
         res = self.data
         for i in range(self.layers - 1):
-            activation_function = Activation(self.activation_functions[i], False)
+            activation_function = Activation(
+                self.activation_functions[i])
             transposed_weights = np.transpose(np.array(self.weights[i]))
             weights, bias = self.separate_bias(transposed_weights)
             res = activation_function.calculate(res, weights, bias)
@@ -54,9 +49,7 @@ class FFNN:
         res = A.predict(self.output)
         sse = self._calculate_sse()
         print(f"\
-  Data Names: {self.data_names}\n\
   Data: {self.data}\n\
-  Target Names: {self.target_names}\n\
   Target: {self.target}\n\
   Predictions: {res}\n\
   SSE: {sse}\n\
