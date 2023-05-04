@@ -37,7 +37,6 @@ class FFNN:
             weights, bias = self.separate_bias(transposed_weights)
             res = activation_function.calculate(res, weights, bias)
             self.ouput_per_layer.append(res)
-
         self.output = res
         return res
 

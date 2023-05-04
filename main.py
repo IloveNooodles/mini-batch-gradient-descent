@@ -14,12 +14,11 @@ def main():
     # path = "./test/"
     # transformed_model = Reader.read_ffnn("softmax.json")
     raw_model, ffnn_model, expected = Reader.read_backprop(
-        "linear.json")
+        "mlp.json")
     # print(raw_model, ffnn_model, expected)
 
     b = Backpropagation(raw_model, expected, ffnn_model)
     b.back_propagate()
-    # b.mini_batch()
 
     # b.calculate_gradient(Activation.LINEAR)
     # transformed_model = b.transform_to_ffnn_model()

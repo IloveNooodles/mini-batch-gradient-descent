@@ -30,8 +30,8 @@ class Activation:
         return res
 
     def __relu_derivative(self, res):
-        res[res < 0] = 0
-        res[res >= 0] = 1
+        res[res <= 0] = 0
+        res[res > 0] = 1
         return res
 
     def __softmax_calculate(self, res):
@@ -45,11 +45,11 @@ class Activation:
         return result
 
     def __softmax_derivative(self, res, target=[]):
-        for index, val in enumerate(target):
-            for t in val:
-                if t == 1:
-                    pred = res[index]
-                    res[index] = -(1 - pred)
+        """ 
+        if t == 1 then -(1-o) -> o - 1
+        """
+        subtract = np.subtract(res, target)
+        return np.array(subtract)
 
         return res
 
@@ -104,6 +104,6 @@ if __name__ == "__main__":
     target[-1] = 1
 
     a = Activation(Activation.SOFTMAX)
-    res = a.backpropagation(output, target)
+    res = a.derivative(output, target)
 
-    # print(res)
+    print(res)

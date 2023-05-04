@@ -48,9 +48,9 @@ class Backpropagation:
         epoch = 0
 
         self.forward_propagation()
-
         current_epoch_error = self.__loss(
             self.target, self.single_output, self.layers[-1]["activation_function"])
+
         print("="*6 + " Backpropagation start " + "="*6)
         # Selama belum gg, backpropagate , update bobot trs feed lagi kedepan
         while (epoch < self.max_iteration and current_epoch_error >= self.error_threshold):
@@ -69,9 +69,8 @@ class Backpropagation:
                     gradient = None
 
                     delta_weights = np.zeros(self.weights[index_layer].shape)
+                    # Kalau dia punya output (layer paling ujung)
                     for instance_index, instance in enumerate(inputs):
-
-                        # Kalau dia punya output (layer paling ujung)
                         if index_layer == total_layer - 1:
                             # Calculate dho error / dho weight
                             # First part: -(t - o) -> (o - t)
@@ -92,20 +91,28 @@ class Backpropagation:
                                     instance.shape[0] + 1)
                                 third_part[1:] = instance
                             else:
-                                third_part = np.insert(
-                                    self.output[index_layer - 1], 0, np.ones(self.output[index_layer-1].shape[0]))
-
+                                shape = self.output[index_layer -
+                                                    1][instance_index].shape
+                                third_part = np.ones(shape[0] + 1)
+                                third_part[1:] = self.output[index_layer -
+                                                             1][instance_index]
                             # Third part must same as len each inital weights transposed
                             cur_weights = np.transpose(
                                 self.weights[index_layer])
                             third_parts = np.zeros(cur_weights.shape)
+
                             for i in range(len(cur_weights)):
                                 third_parts[i] = third_part
 
                             third_parts = np.transpose(third_parts)
 
-                            prev_error = np.multiply(first_part, second_part)
+                            if current_activation == Activation.SOFTMAX:
+                                prev_error = second_part
+                            else:
+                                prev_error = np.multiply(
+                                    first_part, second_part)
                             gradient = np.multiply(prev_error, third_parts)
+
                         # Kalau hidden layer
                         else:
                             # Calculate dho error / dho weight
@@ -113,9 +120,10 @@ class Backpropagation:
 
                             # dho Ed / dho net_o; prev error
                             # print(prev_error)
-
                             # dho net_o / dho h
+                            # remove bias
                             next_layer_cur_weights = self.weights[index_layer + 1][1:]
+                            # print(next_layer_cur_weights)
 
                             # dho Ed / dho h
                             temp = np.multiply(
@@ -124,8 +132,8 @@ class Backpropagation:
                             # calculate sum of the error outputs layer
                             output_layer_sum_error = np.array(
                                 [np.sum(x) for x in temp])
-
-                            derivative = a.derivative(output_layer, targets)
+                            derivative = a.derivative(
+                                output_layer[instance_index], targets[instance_index])
 
                             # calculate prev error
                             prev_error = np.multiply(
@@ -136,12 +144,12 @@ class Backpropagation:
 
                             # Kalau udah paling ujung
                             if index_layer == 0:
-                                second_part = np.ones(
-                                    (inputs.shape[0], inputs.shape[1] + 1))
-                                second_part[:, 1:] = inputs
+                                second_part = np.ones(instance.shape[0] + 1)
+                                second_part[1:] = instance
                             else:
-                                second_part = np.insert(
-                                    self.output[index_layer], 0, np.ones(self.output[index_layer].shape[0]))
+                                shape = self.output[index_layer][instance_index].shape
+                                second_part = np.ones(shape[0] + 1)
+                                second_part[1:] = self.output[index_layer][instance_index]
 
                             cur_weights = np.transpose(self.weights[i])
                             second_parts = np.zeros(cur_weights.shape)
@@ -149,7 +157,6 @@ class Backpropagation:
                                 second_parts[i] = second_part
 
                             second_parts = np.transpose(second_parts)
-
                             gradient = np.multiply(prev_error, second_parts)
                             # print(gradient)
 
@@ -226,6 +233,8 @@ class Backpropagation:
         """
         total = 0
         length = len(pred)
+        # print(target)
+        # print(pred)
         for i in range(length):
             total += pow(target[i] - pred[i], 2)
         return np.sum(total) / 2
