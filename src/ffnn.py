@@ -53,7 +53,7 @@ class FFNN:
   Target: {self.target}\n\
   Predictions: {res}\n\
   SSE: {sse}\n\
-  isValid: {[s < self.max_sse for s in sse]} ( < 1e-6)\n")
+  isValid: {[s < self.max_sse for s in sse]} ( < {self.max_sse})\n")
 
     def _calculate_sse(self):
         sse = 0

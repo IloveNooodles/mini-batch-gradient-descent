@@ -1,5 +1,6 @@
 import json
 import os
+from typing import Dict
 
 import numpy as np
 
@@ -8,19 +9,23 @@ from .activation import Activation
 ACTIVATION_LIST = [Activation.LINEAR, Activation.RELU,
                    Activation.SIGMOID, Activation.SOFTMAX]
 
+MAX_SSE = 1e-8
+BASE_FFNN_PATH = "test/test_case_ffnn/"
+BASE_BACKPROP_PATH = "test/test_case_backprop/"
+
 
 class Reader:
     def __init__(self) -> None:
         pass
 
-    """ 
-    FFNN models are json like
-    """
     @staticmethod
-    def read_ffnn(filepath):
+    def read_ffnn(filename: str) -> Dict:
+        """ 
+        Read ffnn models from json
+        """
         try:
-            with open(filepath, "rb") as f:
-                json_file = json.loads(f.read())
+            with open(BASE_FFNN_PATH + filename, "rb") as f:
+                json_file = json.load(f)
                 # Return models
                 if validate_data(json_file):
                     return json_file
@@ -28,6 +33,41 @@ class Reader:
         except OSError as e:
             print("File not found")
             os._exit(-1)
+
+    @staticmethod
+    def read_backprop(filename: str) -> Dict:
+        try:
+            with open(BASE_BACKPROP_PATH + filename, "rb") as f:
+                json_file = json.load(f)
+                raw_model = json_file["case"]
+                transformed_model = transform_to_ffnn_model(raw_model)
+                expected = json_file["expect"]
+
+                return raw_model, transformed_model, expected
+
+        except OSError as e:
+            print("File not found")
+            os._exit(-1)
+
+
+def transform_to_ffnn_model(input_model: dict):
+    """ 
+    Needed to trasnsform to the current FFNN model
+    """
+    model = {}
+    model["layers"] = len(input_model["model"]["layers"]) + 1
+    model["activation_functions"] = [x["activation_function"]
+                                     for x in input_model["model"]["layers"]]
+    model["neurons"] = [input_model["model"]["input_size"]] + [x["number_of_neurons"]
+                                                               for x in input_model["model"]["layers"]]
+    model["weights"] = [np.transpose(x)
+                        for x in input_model["initial_weights"]]
+    model["rows"] = len(input_model["input"])
+    model["data"] = input_model["input"]
+    model["target"] = input_model["target"]
+    model["max_sse"] = MAX_SSE
+
+    return model
 
 
 def validate_data(json_data) -> bool:

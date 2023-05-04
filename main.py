@@ -3,7 +3,6 @@ from src.backprop import Backpropagation
 from src.ffnn import FFNN
 from src.graph import Graph
 from src.reader import Reader
-from src.reader_backprop import ReaderBackprop
 
 
 def main():
@@ -14,11 +13,12 @@ def main():
 
     # path = "./test/"
     # model = Reader.read_ffnn(path + filename)
-    model, expected = ReaderBackprop.read_backprop("linear.json")
-    # print(model, expected)
+    raw_model, transformed_model, expected = Reader.read_backprop(
+        "softmax_error_only.json")
+    # print(raw_model, transformed_model, expected)
 
-    b = Backpropagation(model, expected)
-    transformed_model = b.transform_to_ffnn_model()
+    # b = Backpropagation(model, expected)
+    # transformed_model = b.transform_to_ffnn_model()
 
     ffnn = FFNN(model=transformed_model)
     ffnn.compute()
