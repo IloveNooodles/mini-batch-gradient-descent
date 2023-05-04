@@ -45,12 +45,11 @@ class Activation:
         return result
 
     def __softmax_derivative(self, res, target=[]):
-        print(target)
         for index, val in enumerate(target):
             for t in val:
-              if t == 1:
-                  pred = res[index]
-                  res[index] = -(1 - pred)
+                if t == 1:
+                    pred = res[index]
+                    res[index] = -(1 - pred)
 
         return res
 
