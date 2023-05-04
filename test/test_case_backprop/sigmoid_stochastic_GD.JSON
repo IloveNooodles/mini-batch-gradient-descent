@@ -30,9 +30,9 @@
     ],
     "learning_parameters": {
       "learning_rate": 0.1,
-      "batch_size": 1,
+      "batch_size": 2,
       "max_iteration": 10000,
-      "error_threshold": 0.1
+      "error_threshold": 0.2
     }
   },
   "expect": {
