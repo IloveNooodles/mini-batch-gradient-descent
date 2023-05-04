@@ -45,7 +45,12 @@ class Activation:
         return result
 
     def __softmax_derivative(self, res, target=[]):
-        return (np.exp(res) / np.sum(np.exp(res) * (1 - (np.exp(res) / np.sum(np.exp(res))))))
+        for index, val in enumerate(target):
+            if val == 1:
+                pred = res[index]
+                res[index] = -(1 - pred)
+
+        return res
 
     def calculate(self, x, w, b):
         res = np.matmul(x, w)

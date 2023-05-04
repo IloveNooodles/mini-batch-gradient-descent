@@ -36,6 +36,9 @@ class Reader:
 
     @staticmethod
     def read_backprop(filename: str) -> Dict:
+        """ 
+        Read json file for backprogation test case
+        """
         try:
             with open(BASE_BACKPROP_PATH + filename, "rb") as f:
                 json_file = json.load(f)
@@ -71,6 +74,10 @@ def transform_to_ffnn_model(input_model: dict):
 
 
 def validate_data(json_data) -> bool:
+    """ 
+    Validate input data .json
+    """
+
     # Validate layers
     layers = json_data['layers']
     activation_functions = np.array(

@@ -18,23 +18,46 @@ class Backpropagation:
         self.error_threshold = model["learning_parameters"]["error_threshold"]
         self.expected = expected
 
-    def __loss(target: list, y: list, activation) -> float:
+    def calculate(self):
+        error = 1
+        
+        for i in range(len(self.max_iteration)):
+            pass
+
+    def __loss(self, target: list, pred: list, activation):
         """ 
         For linear, sigmoid, relu use SSE.
+
         Softmax use cross entropy 
         """
         result = 0
         if activation == Activation.SOFTMAX:
-            # cross entropy
-            pass
-
+            result = self.__cross_entropy(target, pred)
         else:
-            # SSE
-            total = 0
-            length = len(y)
-            for i in range(length):
-                total += pow(target[i] - y[i], 2)
-
-            result = total / 2
+            result = self._sse(target, pred)
 
         return result
+
+    def __sse(self, target: list, pred: list):
+        """ 
+        Calculate errors using sse
+
+        sum squared of (target - pred )/ 2
+        """
+        total = 0
+        length = len(pred)
+        for i in range(length):
+            total += pow(target[i] - pred[i], 2)
+
+        return total / 2
+
+    def __cross_entropy(self, target: list, pred: list):
+        """ 
+        Calculate cross entropy
+
+        If target == 1 then -np log pj
+
+        """
+        for index, val in enumerate(target):
+            if val == 1:
+                return -np.log(pred[index])
