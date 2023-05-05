@@ -46,34 +46,40 @@ class Backpropagation:
             self.input, self.target, self.batch_size)
 
         epoch = 0
-
         self.forward_propagation()
         current_epoch_error = self.__loss(
             self.target, self.single_output, self.layers[-1]["activation_function"])
+
         print("="*6 + " Backpropagation start " + "="*6)
+
         # Selama belum gg, backpropagate , update bobot trs feed lagi kedepan
         while (epoch == 0) or (epoch < self.max_iteration and current_epoch_error >= self.error_threshold):
             total_layer = len(self.layers)
             prev_error = None
+
             print("=" * 8 + f" EPOCH {epoch + 1} " + "=" * 8)
             print(f"ERROR: {current_epoch_error}")
             # print(f"Output: {self.single_output}")
+
             delta_weights_total = []
             list_delta_error_total_layer = []
-            # back propagate
-            for index_layer in range(total_layer - 1, -1, -1):
-                current_activation = self.layers[index_layer]["activation_function"]
-                output_layer = self.output[index_layer]
-                a = Activation(current_activation)
-                # delta_weights_batch = []
-                delta_weights = np.zeros(self.weights[index_layer].shape)
-                # batch_size nya 2 trs ada 1 batch
-                delta_error_current_layer = []
-                for index, batch_instance in enumerate(total_batch):
-                    inputs = np.array(batch_instance["inputs"])
-                    targets = np.array(batch_instance["targets"])
+
+            for index_batch, batch_instance in enumerate(total_batch):
+                inputs = np.array(batch_instance["inputs"])
+                targets = np.array(batch_instance["targets"])
+
+                # For each batch, backpropagate
+                for index_layer in range(total_layer - 1, -1, -1):
                     gradient = None
+
+                    current_activation = self.layers[index_layer]["activation_function"]
+                    output_layer = self.output[index_layer]
+                    a = Activation(current_activation)
+                    # delta_weights_batch = []
                     delta_weights = np.zeros(self.weights[index_layer].shape)
+                    # batch_size nya 2 trs ada 1 batch
+                    delta_error_current_layer = []
+
                     # Kalau dia punya output (layer paling ujung)
                     for instance_index, instance in enumerate(inputs):
                         if index_layer == total_layer - 1:
@@ -134,6 +140,7 @@ class Backpropagation:
                             # remove bias
                             # print(next_layer_cur_weights)
                             next_layer_cur_weights = self.weights[index_layer + 1][1:]
+                            print(list_delta_error_total_layer[-1])
                             prev_error = list_delta_error_total_layer[-1][instance_index]
 
                             # dho Ed / dho h
@@ -146,6 +153,7 @@ class Backpropagation:
                                 output_layer[instance_index], targets[instance_index])
 
                             derivative = np.array(derivative)
+
                             # calculate prev error
                             prev_error = np.multiply(
                                 temp, derivative)
@@ -177,25 +185,24 @@ class Backpropagation:
 
                         delta_error_current_layer.append(prev_error)
 
-                    # delta_weights_batch.append(delta_weights)
+                    list_delta_error_total_layer.append(
+                        delta_error_current_layer)
 
-                delta_weights_total.append(delta_weights)
-                list_delta_error_total_layer.append(delta_error_current_layer)
+                    delta_weights_total.append(delta_weights)
 
-                # if index_layer != total_layer - 1:
-                #     list_delta_error.clear()
-            # Update weight
-            delta_weights_total.reverse()
-            self.weights = self.weights + \
-                np.array(delta_weights_total)
-            # print(
-            #     f"Layer {index_layer + 1} Batch {index + 1} completed")
+                # Update weight
+                delta_weights_total.reverse()
+                self.weights = self.weights + \
+                    np.array(delta_weights_total)
 
-            new_weights = [np.transpose(x) for x in self.weights]
-            self.ffnn_model["weights"] = new_weights
-            self.forward_propagation()
-            current_epoch_error = self.__loss(
-                self.target,  self.single_output, self.layers[-1]["activation_function"])
+                # print(
+                #     f"Layer {index_layer + 1} Batch {index + 1} completed")
+
+                new_weights = [np.transpose(x) for x in self.weights]
+                self.ffnn_model["weights"] = new_weights
+                self.forward_propagation()
+                current_epoch_error = self.__loss(
+                    self.target,  self.single_output, self.layers[-1]["activation_function"])
 
             epoch += 1
 

@@ -15,7 +15,7 @@ def main():
     # path = "./test/"
     # transformed_model = Reader.read_ffnn("softmax.json")
     raw_model, ffnn_model, expected = Reader.read_backprop(
-        "sigmoid.json")  # Ganti ke file
+        "mlp.json")  # Ganti ke file
 
     b = Backpropagation(raw_model, expected, ffnn_model)
     b.back_propagate()
