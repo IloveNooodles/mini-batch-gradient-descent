@@ -52,12 +52,12 @@ class Backpropagation:
             self.target, self.single_output, self.layers[-1]["activation_function"])
         print("="*6 + " Backpropagation start " + "="*6)
         # Selama belum gg, backpropagate , update bobot trs feed lagi kedepan
-        while (epoch < self.max_iteration and current_epoch_error >= self.error_threshold):
+        while (epoch == 0) or (epoch < self.max_iteration and current_epoch_error >= self.error_threshold):
             total_layer = len(self.layers)
             prev_error = None
             print("=" * 8 + f" EPOCH {epoch + 1} " + "=" * 8)
             print(f"ERROR: {current_epoch_error}")
-            print(f"Output: {self.single_output}")
+            # print(f"Output: {self.single_output}")
             delta_weights_total = []
             list_delta_error_total_layer = []
             # back propagate
@@ -185,12 +185,11 @@ class Backpropagation:
                 # if index_layer != total_layer - 1:
                 #     list_delta_error.clear()
             # Update weight
-            print("DELTA WEGIHTS CUY", np.array(delta_weights_total.reverse()))
+            delta_weights_total.reverse()
             self.weights = self.weights + \
                 np.array(delta_weights_total)
-            print("WEIGHTS GAMING", self.weights)
-            print(
-                f"Layer {index_layer + 1} Batch {index + 1} completed")
+            # print(
+            #     f"Layer {index_layer + 1} Batch {index + 1} completed")
 
             new_weights = [np.transpose(x) for x in self.weights]
             self.ffnn_model["weights"] = new_weights
@@ -212,7 +211,10 @@ class Backpropagation:
         print("Final weights")
         print(self.weights)
         print("Excpected")
-        print(np.array(self.expected["final_weights"]))
+        try:
+            print(np.array(self.expected["final_weights"]))
+        except:
+            pass
 
     def split_input_targets_to_batch(self, inputs: List, targets: List, batch_size: int) -> List[List]:
         """ 
