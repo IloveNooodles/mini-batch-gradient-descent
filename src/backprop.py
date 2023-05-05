@@ -75,14 +75,15 @@ class Backpropagation:
                     current_activation = self.layers[index_layer]["activation_function"]
                     output_layer = self.output[index_layer]
                     a = Activation(current_activation)
-                    # delta_weights_batch = []
+                    
                     delta_weights = np.zeros(self.weights[index_layer].shape)
-                    # batch_size nya 2 trs ada 1 batch
                     delta_error_current_layer = []
 
-                    # Kalau dia punya output (layer paling ujung)
                     for instance_index, instance in enumerate(inputs):
+
+                        # Kalau dia punya output (layer paling ujung)
                         if index_layer == total_layer - 1:
+                          
                             # Calculate dho error / dho weight
                             # First part: -(t - o) -> (o - t)
                             first_part = np.subtract(
@@ -92,9 +93,6 @@ class Backpropagation:
                             second_part = a.derivative(
                                 output_layer[instance_index], targets[instance_index])
 
-                            # print("FIRST: ", first_part)
-                            # print("SECOND: ", second_part)
-                            # print(self.output)
                             # Third part: input di layer sebelumnya
                             third_part = None
 
@@ -110,6 +108,7 @@ class Backpropagation:
                                 third_part = np.ones(shape[0] + 1)
                                 third_part[1:] = self.output[index_layer -
                                                              1][instance_index]
+
                             # Third part must same as len each inital weights transposed
                             cur_weights = np.transpose(
                                 self.weights[index_layer])
@@ -125,8 +124,7 @@ class Backpropagation:
                             else:
                                 prev_error = np.multiply(
                                     first_part, second_part)
-                            # w = w + nabla * delta * x
-                            #
+
                             gradient = np.multiply(prev_error, third_parts)
 
                         # Kalau hidden layer
@@ -205,6 +203,8 @@ class Backpropagation:
                     self.target,  self.single_output, self.layers[-1]["activation_function"])
 
             epoch += 1
+            if epoch == 1:
+                break
 
         print("Backpropagation complete")
         if current_epoch_error < self.error_threshold:
