@@ -58,11 +58,14 @@ class Backpropagation:
             print("=" * 8 + f" EPOCH {epoch + 1} " + "=" * 8)
             print(f"ERROR: {current_epoch_error}")
             print(f"Output: {self.single_output}")
+            delta_weights_total = []
+            # back propagate
             for index_layer in range(total_layer - 1, -1, -1):
                 current_activation = self.layers[index_layer]["activation_function"]
                 output_layer = self.output[index_layer]
-                print("SASSSSS", self.output)
                 a = Activation(current_activation)
+                # delta_weights_batch = []
+                delta_weights = np.zeros(self.weights[index_layer].shape)
                 for index, batch_instance in enumerate(total_batch):
                     inputs = np.array(batch_instance["inputs"])
                     targets = np.array(batch_instance["targets"])
@@ -113,6 +116,8 @@ class Backpropagation:
                             else:
                                 prev_error = np.multiply(
                                     first_part, second_part)
+                            # w = w + nabla * delta * x
+                            #
                             gradient = np.multiply(prev_error, third_parts)
 
                         # Kalau hidden layer
@@ -166,12 +171,16 @@ class Backpropagation:
                         delta_weights = delta_weights - \
                             np.dot(self.learning_rate, gradient)
 
-                    # Update weight
-                    print("DELTA WEGIHTS CUY", delta_weights)
-                    self.weights[index_layer] = self.weights[index_layer] + \
-                        delta_weights
-                    print(
-                        f"Layer {index_layer + 1} Batch {index + 1} completed")
+                    # delta_weights_batch.append(delta_weights)
+
+                delta_weights_total.append(delta_weights)
+            # Update weight
+            print("DELTA WEGIHTS CUY", np.array(delta_weights_total.reverse()))
+            self.weights = self.weights + \
+                np.array(delta_weights_total)
+            print("WEIGHTS GAMING", self.weights)
+            print(
+                f"Layer {index_layer + 1} Batch {index + 1} completed")
 
             new_weights = [np.transpose(x) for x in self.weights]
             self.ffnn_model["weights"] = new_weights
