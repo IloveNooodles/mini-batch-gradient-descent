@@ -165,10 +165,12 @@ class Backpropagation:
                             np.dot(self.learning_rate, gradient)
 
                     # Update weight
+                    print("DELTA WEGIHTS CUY", delta_weights)
                     self.weights[index_layer] = self.weights[index_layer] + \
                         delta_weights
                     print(
                         f"Layer {index_layer + 1} Batch {index + 1} completed")
+
             new_weights = [np.transpose(x) for x in self.weights]
             self.ffnn_model["weights"] = new_weights
             self.forward_propagation()
@@ -188,8 +190,14 @@ class Backpropagation:
         print(self.single_output)
         print("Final weights")
         print(self.weights)
+        print("Excpected")
+        print(np.array(self.expected["final_weights"]))
 
     def split_input_targets_to_batch(self, inputs: List, targets: List, batch_size: int) -> List[List]:
+        """ 
+        Split input and targets into batch
+        """
+
         total_batch = []
         ctr = 0
         cur_input = []
@@ -233,8 +241,6 @@ class Backpropagation:
         """
         total = 0
         length = len(pred)
-        # print(target)
-        # print(pred)
         for i in range(length):
             total += pow(target[i] - pred[i], 2)
         return np.sum(total) / 2

@@ -14,20 +14,12 @@ def main():
     # path = "./test/"
     # transformed_model = Reader.read_ffnn("softmax.json")
     raw_model, ffnn_model, expected = Reader.read_backprop(
-        "mlp.json")
-    # print(raw_model, ffnn_model, expected)
+        "mlp.json")  # Ganti ke file
 
     b = Backpropagation(raw_model, expected, ffnn_model)
     b.back_propagate()
 
-    # b.calculate_gradient(Activation.LINEAR)
-    # transformed_model = b.transform_to_ffnn_model()
-
     ffnn = FFNN(model=ffnn_model)
-    # print(ffnn)
-    # ffnn.compute()
-    # ffnn.predict()
-
     filename = filename.split(".")[0]
     graph = Graph(ffnn, filename)
 
