@@ -10,6 +10,7 @@ def main():
     print("                Backpropagation              ")
     print("=============================================")
     # filename = input("Input filename inside test folder: ")
+    filename = "A"
 
     # path = "./test/"
     # transformed_model = Reader.read_ffnn("softmax.json")
@@ -19,15 +20,15 @@ def main():
     b = Backpropagation(raw_model, expected, ffnn_model)
     b.back_propagate()
 
-    ffnn = FFNN(model=ffnn_model)
-    filename = filename.split(".")[0]
-    graph = Graph(ffnn, filename)
+    # ffnn = FFNN(model=ffnn_model)
+    # filename = filename.split(".")[0]
+    # graph = Graph(ffnn, filename)
 
-    print("=============================================")
-    print("Graph is saved in folder res with name: " +
-          filename + "_graph.png")
-    print("=============================================")
-    graph.draw()
+    # print("=============================================")
+    # print("Graph is saved in folder res with name: " +
+    #       filename + "_graph.png")
+    # print("=============================================")
+    # graph.draw()
 
 
 if __name__ == "__main__":

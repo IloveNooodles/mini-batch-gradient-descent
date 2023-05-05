@@ -30,9 +30,10 @@ class Activation:
         return res
 
     def __relu_derivative(self, res):
-        res[res <= 0] = 0
-        res[res > 0] = 1
-        return res
+        res_copy = res.copy()
+        res_copy[res_copy <= 0] = 0
+        res_copy[res_copy > 0] = 1
+        return res_copy
 
     def __softmax_calculate(self, res):
         numerator = np.array([pow(math.e, x) for x in res])

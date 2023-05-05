@@ -50,7 +50,6 @@ class Backpropagation:
         self.forward_propagation()
         current_epoch_error = self.__loss(
             self.target, self.single_output, self.layers[-1]["activation_function"])
-
         print("="*6 + " Backpropagation start " + "="*6)
         # Selama belum gg, backpropagate , update bobot trs feed lagi kedepan
         while (epoch < self.max_iteration and current_epoch_error >= self.error_threshold):
@@ -62,12 +61,12 @@ class Backpropagation:
             for index_layer in range(total_layer - 1, -1, -1):
                 current_activation = self.layers[index_layer]["activation_function"]
                 output_layer = self.output[index_layer]
+                print("SASSSSS", self.output)
                 a = Activation(current_activation)
                 for index, batch_instance in enumerate(total_batch):
                     inputs = np.array(batch_instance["inputs"])
                     targets = np.array(batch_instance["targets"])
                     gradient = None
-
                     delta_weights = np.zeros(self.weights[index_layer].shape)
                     # Kalau dia punya output (layer paling ujung)
                     for instance_index, instance in enumerate(inputs):
@@ -81,6 +80,9 @@ class Backpropagation:
                             second_part = a.derivative(
                                 output_layer[instance_index], targets[instance_index])
 
+                            # print("FIRST: ", first_part)
+                            # print("SECOND: ", second_part)
+                            # print(self.output)
                             # Third part: input di layer sebelumnya
                             third_part = None
 
