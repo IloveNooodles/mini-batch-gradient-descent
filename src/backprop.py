@@ -59,6 +59,7 @@ class Backpropagation:
             print(f"ERROR: {current_epoch_error}")
             print(f"Output: {self.single_output}")
             delta_weights_total = []
+            list_delta_error_total_layer = []
             # back propagate
             for index_layer in range(total_layer - 1, -1, -1):
                 current_activation = self.layers[index_layer]["activation_function"]
@@ -66,6 +67,8 @@ class Backpropagation:
                 a = Activation(current_activation)
                 # delta_weights_batch = []
                 delta_weights = np.zeros(self.weights[index_layer].shape)
+                # batch_size nya 2 trs ada 1 batch
+                delta_error_current_layer = []
                 for index, batch_instance in enumerate(total_batch):
                     inputs = np.array(batch_instance["inputs"])
                     targets = np.array(batch_instance["targets"])
@@ -129,22 +132,23 @@ class Backpropagation:
                             # print(prev_error)
                             # dho net_o / dho h
                             # remove bias
-                            next_layer_cur_weights = self.weights[index_layer + 1][1:]
                             # print(next_layer_cur_weights)
+                            next_layer_cur_weights = self.weights[index_layer + 1][1:]
+                            prev_error = list_delta_error_total_layer[-1][instance_index]
 
                             # dho Ed / dho h
-                            temp = np.multiply(
-                                prev_error, next_layer_cur_weights)
+                            temp = np.dot(next_layer_cur_weights, prev_error)
 
                             # calculate sum of the error outputs layer
-                            output_layer_sum_error = np.array(
-                                [np.sum(x) for x in temp])
+                            # output_layer_sum_error = np.array(
+                            #     [np.sum(x) for x in temp])
                             derivative = a.derivative(
                                 output_layer[instance_index], targets[instance_index])
 
+                            derivative = np.array(derivative)
                             # calculate prev error
                             prev_error = np.multiply(
-                                output_layer_sum_error, derivative)
+                                temp, derivative)
 
                             # Second part: dho net / dho weight
                             second_part = None
@@ -171,9 +175,15 @@ class Backpropagation:
                         delta_weights = delta_weights - \
                             np.dot(self.learning_rate, gradient)
 
+                        delta_error_current_layer.append(prev_error)
+
                     # delta_weights_batch.append(delta_weights)
 
                 delta_weights_total.append(delta_weights)
+                list_delta_error_total_layer.append(delta_error_current_layer)
+
+                # if index_layer != total_layer - 1:
+                #     list_delta_error.clear()
             # Update weight
             print("DELTA WEGIHTS CUY", np.array(delta_weights_total.reverse()))
             self.weights = self.weights + \

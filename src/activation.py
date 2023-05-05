@@ -18,7 +18,7 @@ class Activation:
     def __linear_derivative(self, res):
         return np.ones(np.shape(res))
 
-    def __sigmoid_ncalculate(self, res):
+    def __sigmoid_calculate(self, res):
         res = np.array([(1 / (1 + pow(math.e, -x))) for x in res])
         return res
 
