@@ -59,7 +59,6 @@ class Backpropagation:
 
             print("=" * 8 + f" EPOCH {epoch + 1} " + "=" * 8)
             print(f"ERROR: {current_epoch_error}")
-            # print(f"Output: {self.single_output}")
 
             delta_weights_total = []
             list_delta_error_total_layer = []
@@ -190,11 +189,10 @@ class Backpropagation:
 
                 # Update weight
                 delta_weights_total.reverse()
-                self.weights = self.weights + \
-                    np.array(delta_weights_total)
+                self.weights = self.weights + np.array(delta_weights_total)
 
-                # print(
-                #     f"Layer {index_layer + 1} Batch {index + 1} completed")
+                print(
+                    f"Batch {index_batch + 1} completed")
 
                 new_weights = [np.transpose(x) for x in self.weights]
                 self.ffnn_model["weights"] = new_weights
@@ -203,8 +201,6 @@ class Backpropagation:
                     self.target,  self.single_output, self.layers[-1]["activation_function"])
 
             epoch += 1
-            if epoch == 1:
-                break
 
         print("Backpropagation complete")
         if current_epoch_error < self.error_threshold:
@@ -221,7 +217,7 @@ class Backpropagation:
         try:
             print(np.array(self.expected["final_weights"]))
         except:
-            pass
+            print("No expected final weights in the test case")
 
     def split_input_targets_to_batch(self, inputs: List, targets: List, batch_size: int) -> List[List]:
         """ 
