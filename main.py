@@ -9,7 +9,7 @@ def main():
     print("=============================================")
     print("                Backpropagation              ")
     print("=============================================")
-    filename = input("Input filename inside test folder: ")
+    # filename = input("Input filename inside test folder: ")
 
     # path = "./test/"
     # transformed_model = Reader.read_ffnn("softmax.json")
