@@ -1,0 +1,21 @@
+digraph G {
+	node [shape=circle]
+	b1
+	-1.0
+	0.5
+	b2
+	h11
+	h12
+	b1 -> h11 [label=0.1]
+	b1 -> h12 [label=0.2]
+	-1.0 -> h11 [label=0.4]
+	-1.0 -> h12 [label=-0.5]
+	0.5 -> h11 [label=0.7]
+	0.5 -> h12 [label=0.8]
+	b2 -> y1 [label=0.02099999999999999]
+	b2 -> y2 [label=0.1945]
+	h11 -> y1 [label=0.39605]
+	h11 -> y2 [label=-0.500275]
+	h12 -> y1 [label=0.6131]
+	h12 -> y2 [label=0.79395]
+}

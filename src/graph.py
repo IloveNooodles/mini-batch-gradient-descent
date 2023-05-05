@@ -21,8 +21,9 @@ class Graph:
     def _add_node(self):
         # Add input nodes
         self.f.node("b1")
-        for data_name in self.ffnn.data_names:
-            self.f.node(data_name)
+        # Pake data aja
+        for data_name in self.ffnn.data[0]:
+            self.f.node(str(data_name))
 
         # Add nodes in the next layers
         for layer in range(1, self.ffnn.layers - 1):
@@ -56,10 +57,10 @@ class Graph:
             for i in range(self.ffnn.neurons[layer]):
                 for j in range(len(weights[i])):
                     if layers == 2:
-                        start = self.ffnn.data_names[i]
+                        start = str(self.ffnn.data[0][i])
                         end = f"y{j+1}"
                     elif layer == 0:
-                        start = self.ffnn.data_names[i]
+                        start = str(self.ffnn.data[0][i])
                         end = f"h{layer+1}{j+1}"
                     elif layer == self.ffnn.layers - 2:
                         start = f"h{layer}{i+1}"
